@@ -93,6 +93,13 @@ npm run preview    # serve the production build locally
 The built `dist/` folder is a fully static site — open `dist/index.html` directly in
 any browser, or host it on any static file server.
 
+### Deploy to GitHub Pages
+
+A repository administrator must enable GitHub Pages under **Settings → Pages** and
+select **GitHub Actions** as the build and deployment source. Then rerun the failed
+workflow or push to `main`. The workflow checks the Pages configuration before
+building and deploys the resulting artifact to the `github-pages` environment.
+
 ---
 
 ## Your data
