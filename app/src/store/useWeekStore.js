@@ -68,12 +68,14 @@ function findGoal(roles, goalId) {
 // ── Store definition ─────────────────────────────────────────────────────────
 export const useWeekStore = defineStore('week', () => {
   const weekKey = ref(currentWeekKey())
-  const mode = ref('define')
+  const mode = ref('home')
+  const isReadOnly = ref(false)
   const plan = ref(defaultPlan(weekKey.value))
 
   // ── Persistence ────────────────────────────────────────────────────────────
 
   function save() {
+    if (isReadOnly.value) return
     localStorage.setItem(storageKey(weekKey.value), JSON.stringify(plan.value))
   }
 
@@ -81,7 +83,8 @@ export const useWeekStore = defineStore('week', () => {
    * Load data for `newWeekKey`. If no data exists for it, carry forward from
    * the previous week (text + colors preserved; blocks + budgets reset).
    */
-  function loadWeek(newWeekKey) {
+  function loadWeek(newWeekKey, readonly = false) {
+    isReadOnly.value = readonly
     weekKey.value = newWeekKey
     const raw = localStorage.getItem(storageKey(newWeekKey))
     if (raw) {
@@ -103,21 +106,30 @@ export const useWeekStore = defineStore('week', () => {
     mode.value = newMode
   }
 
+  function goHome() {
+    mode.value = 'home'
+    isReadOnly.value = false
+    loadWeek(currentWeekKey(), false)
+  }
+
   // ── Sharpen the Saw actions ─────────────────────────────────────────────────
 
   /** Update colorFamily and/or color on the saw meta */
   function updateSawMeta(patch) {
+    if (isReadOnly.value) return
     Object.assign(plan.value.sharpenTheSaw, patch)
     save()
   }
 
   /** Update activity and/or budgetHours for one dimension */
   function updateSawDimension(dim, patch) {
+    if (isReadOnly.value) return
     Object.assign(plan.value.sharpenTheSaw.dimensions[dim], patch)
     save()
   }
 
   function addSawBlock(dim, day, startHour, durationHours) {
+    if (isReadOnly.value) return
     plan.value.sharpenTheSaw.dimensions[dim].blocks.push({
       day,
       startHour,
@@ -127,11 +139,13 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function updateSawBlock(dim, idx, patch) {
+    if (isReadOnly.value) return
     Object.assign(plan.value.sharpenTheSaw.dimensions[dim].blocks[idx], patch)
     save()
   }
 
   function removeSawBlock(dim, idx) {
+    if (isReadOnly.value) return
     plan.value.sharpenTheSaw.dimensions[dim].blocks.splice(idx, 1)
     save()
   }
@@ -139,6 +153,7 @@ export const useWeekStore = defineStore('week', () => {
   // ── Role actions ────────────────────────────────────────────────────────────
 
   function addRole(patch = {}) {
+    if (isReadOnly.value) return
     const role = {
       id: crypto.randomUUID(),
       name: '',
@@ -153,6 +168,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function updateRole(roleId, patch) {
+    if (isReadOnly.value) return
     const role = plan.value.roles.find((r) => r.id === roleId)
     if (role) {
       Object.assign(role, patch)
@@ -161,6 +177,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function deleteRole(roleId) {
+    if (isReadOnly.value) return
     const idx = plan.value.roles.findIndex((r) => r.id === roleId)
     if (idx !== -1) {
       plan.value.roles.splice(idx, 1)
@@ -170,6 +187,7 @@ export const useWeekStore = defineStore('week', () => {
 
   /** Replace the roles array order (e.g. after drag-and-drop) */
   function reorderRoles(newRoles) {
+    if (isReadOnly.value) return
     plan.value.roles = newRoles
     save()
   }
@@ -177,6 +195,7 @@ export const useWeekStore = defineStore('week', () => {
   // ── Goal actions ────────────────────────────────────────────────────────────
 
   function addGoal(roleId, patch = {}) {
+    if (isReadOnly.value) return
     const role = plan.value.roles.find((r) => r.id === roleId)
     if (!role) return
     const goal = {
@@ -193,6 +212,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function updateGoal(goalId, patch) {
+    if (isReadOnly.value) return
     const goal = findGoal(plan.value.roles, goalId)
     if (goal) {
       Object.assign(goal, patch)
@@ -201,6 +221,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function deleteGoal(roleId, goalId) {
+    if (isReadOnly.value) return
     const role = plan.value.roles.find((r) => r.id === roleId)
     if (!role) return
     const idx = role.goals.findIndex((g) => g.id === goalId)
@@ -212,6 +233,7 @@ export const useWeekStore = defineStore('week', () => {
 
   /** Replace a role's goals array (e.g. after drag-and-drop reorder) */
   function reorderGoals(roleId, newGoals) {
+    if (isReadOnly.value) return
     const role = plan.value.roles.find((r) => r.id === roleId)
     if (role) {
       role.goals = newGoals
@@ -222,6 +244,7 @@ export const useWeekStore = defineStore('week', () => {
   // ── Block actions for goals ─────────────────────────────────────────────────
 
   function addBlock(goalId, day, startHour, durationHours) {
+    if (isReadOnly.value) return
     const goal = findGoal(plan.value.roles, goalId)
     if (goal) {
       goal.blocks.push({ day, startHour, durationHours })
@@ -230,6 +253,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function updateBlock(goalId, idx, patch) {
+    if (isReadOnly.value) return
     const goal = findGoal(plan.value.roles, goalId)
     if (goal && goal.blocks[idx]) {
       Object.assign(goal.blocks[idx], patch)
@@ -238,6 +262,7 @@ export const useWeekStore = defineStore('week', () => {
   }
 
   function removeBlock(goalId, idx) {
+    if (isReadOnly.value) return
     const goal = findGoal(plan.value.roles, goalId)
     if (goal) {
       goal.blocks.splice(idx, 1)
@@ -305,12 +330,14 @@ export const useWeekStore = defineStore('week', () => {
     // state
     weekKey,
     mode,
+    isReadOnly,
     plan,
     // persistence
     save,
     loadWeek,
     // mode
     setMode,
+    goHome,
     // saw actions
     updateSawMeta,
     updateSawDimension,

@@ -41,6 +41,7 @@ const durationLabel = computed(() => {
 })
 
 function onDragStart(event) {
+  if (store.isReadOnly) return
   const payload = {
     type: props.blockType,
     goalId: props.goalId,
@@ -53,6 +54,7 @@ function onDragStart(event) {
 }
 
 function deleteBlock() {
+  if (store.isReadOnly) return
   if (props.blockType === 'goal') {
     store.removeBlock(props.goalId, props.blockIndex)
   } else {
@@ -61,6 +63,7 @@ function deleteBlock() {
 }
 
 function onResizeDown(event) {
+  if (store.isReadOnly) return
   const payload = {
     type: props.blockType,
     goalId: props.goalId,
@@ -77,15 +80,15 @@ function onResizeDown(event) {
   <div
     class="time-block"
     :style="style"
-    draggable="true"
+    :draggable="!store.isReadOnly"
     @dragstart="onDragStart"
   >
-    <button class="delete-btn" @click.stop="deleteBlock" title="Remove block">✕</button>
+    <button v-if="!store.isReadOnly" class="delete-btn" @click.stop="deleteBlock" title="Remove block">✕</button>
     <div class="block-content">
       <span class="block-label">{{ label }}</span>
       <span class="block-duration">{{ durationLabel }}</span>
     </div>
-    <div class="resize-handle" @pointerdown.stop="onResizeDown"></div>
+    <div v-if="!store.isReadOnly" class="resize-handle" @pointerdown.stop="onResizeDown"></div>
   </div>
 </template>
 

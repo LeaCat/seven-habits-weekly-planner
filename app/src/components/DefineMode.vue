@@ -54,6 +54,7 @@ const showEmptyState = computed(() => roles.value.length === 0 && sawIsEmpty.val
       ghost-class="ghost"
       animation="200"
       class="roles-list"
+      :disabled="store.isReadOnly"
     >
       <template #item="{ element }">
         <RoleCard :role="element" />
@@ -66,7 +67,7 @@ const showEmptyState = computed(() => roles.value.length === 0 && sawIsEmpty.val
     </div>
 
     <!-- Add Role -->
-    <button class="btn-add-role" type="button" @click="addRole">+ Add Role</button>
+    <button v-if="!store.isReadOnly" class="btn-add-role" type="button" @click="addRole">+ Add Role</button>
 
     <!-- Footer -->
     <footer class="define-footer">

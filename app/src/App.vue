@@ -1,6 +1,7 @@
 <script setup>
 import { useWeekStore } from './store/useWeekStore.js'
 import NavBar from './components/NavBar.vue'
+import HomeScreen from './components/HomeScreen.vue'
 import DefineMode from './components/DefineMode.vue'
 import BudgetMode from './components/BudgetMode.vue'
 import PlanMode from './components/PlanMode.vue'
@@ -12,9 +13,10 @@ const store = useWeekStore()
   <div id="app">
     <NavBar />
     <main class="app-main">
-      <DefineMode v-if="store.mode === 'define'" />
+      <HomeScreen v-if="store.mode === 'home'" />
+      <DefineMode v-else-if="store.mode === 'define'" />
       <BudgetMode v-else-if="store.mode === 'budget'" />
-      <PlanMode  v-else-if="store.mode === 'plan'" />
+      <PlanMode   v-else-if="store.mode === 'plan'" />
     </main>
   </div>
 </template>

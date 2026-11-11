@@ -34,6 +34,7 @@ export function useDragDrop() {
    * @param {DragEvent} event
    */
   function handleDrop(day, hour, event) {
+    if (store.isReadOnly) return
     event.preventDefault()
     let payload
     try {
@@ -74,6 +75,7 @@ export function useDragDrop() {
    * @param {PointerEvent} pointerdownEvent
    */
   function startResize(payload, pointerdownEvent) {
+    if (store.isReadOnly) return
     pointerdownEvent.preventDefault()
     pointerdownEvent.stopPropagation()
     const startY = pointerdownEvent.clientY

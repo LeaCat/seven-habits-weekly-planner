@@ -47,10 +47,10 @@ function onDragStart(event) {
   <div
     v-if="showBudget"
     class="goal-card goal-card--plan"
-    draggable="true"
+    :draggable="!store.isReadOnly"
     :class="{ 'goal-card--full': remaining <= 0 }"
     :style="{ '--role-accent': roleColor }"
-    @dragstart="onDragStart"
+    @dragstart="!store.isReadOnly && onDragStart($event)"
   >
     <div class="goal-card__text">{{ goal.text || '(no goal text)' }}</div>
     <div class="goal-card__hours">
@@ -72,7 +72,7 @@ function onDragStart(event) {
   <!-- ── Define-mode full card (showBudget=false, default) ───────────── -->
   <div v-else class="goal-card" :class="{ 'warn-empty': !goal.text.trim() }">
     <!-- Drag handle -->
-    <span class="drag-handle" title="Drag to reorder">⠿</span>
+    <span v-if="!store.isReadOnly" class="drag-handle" title="Drag to reorder">⠿</span>
 
     <div class="goal-body">
       <!-- Goal text -->
@@ -82,6 +82,7 @@ function onDragStart(event) {
         placeholder="Goal (Big Rock)…"
         :value="goal.text"
         @input="onTextInput"
+        :disabled="store.isReadOnly"
       />
 
       <!-- Expected output -->
@@ -91,6 +92,7 @@ function onDragStart(event) {
         placeholder="What does done look like?"
         :value="goal.expectedOutput"
         @input="onOutputInput"
+        :disabled="store.isReadOnly"
       />
 
       <!-- Inline warning -->
@@ -98,7 +100,7 @@ function onDragStart(event) {
     </div>
 
     <!-- Delete button -->
-    <button class="btn-icon btn-delete" type="button" title="Delete goal" @click="remove">✕</button>
+    <button v-if="!store.isReadOnly" class="btn-icon btn-delete" type="button" title="Delete goal" @click="remove">✕</button>
   </div>
 </template>
 

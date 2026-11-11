@@ -43,7 +43,7 @@ function onActivityInput(dimKey, e) {
     </div>
 
     <!-- Color picker -->
-    <div class="saw-picker">
+    <div v-if="!store.isReadOnly" class="saw-picker">
       <p class="label">Section color</p>
       <ColorPicker
         :family="saw.colorFamily"
@@ -70,6 +70,7 @@ function onActivityInput(dimKey, e) {
           :placeholder="`${dim.label} renewal activity…`"
           :value="saw.dimensions[dim.key].activity"
           @input="onActivityInput(dim.key, $event)"
+          :disabled="store.isReadOnly"
         />
       </div>
     </div>

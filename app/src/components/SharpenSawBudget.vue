@@ -28,7 +28,7 @@ function onBudgetInput(dim, event) {
   <section class="saw-budget">
     <div class="saw-header" :style="{ borderLeftColor: sawColor }">
       <span class="saw-title">🌱 Sharpen the Saw</span>
-      <button class="edit-link" @click="store.setMode('define')">Edit activities →</button>
+      <button v-if="!store.isReadOnly" class="edit-link" @click="store.setMode('define')">Edit activities →</button>
     </div>
 
     <div class="saw-rows">
@@ -48,6 +48,7 @@ function onBudgetInput(dim, event) {
           step="0.5"
           :value="store.plan.sharpenTheSaw.dimensions[dim.key].budgetHours"
           @input="onBudgetInput(dim.key, $event)"
+          :disabled="store.isReadOnly"
         />
         <span class="dim-unit">h</span>
       </div>

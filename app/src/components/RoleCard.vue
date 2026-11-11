@@ -54,7 +54,7 @@ function remove() {
   >
     <!-- Card header row -->
     <div class="role-header">
-      <span class="drag-handle" title="Drag to reorder">⠿</span>
+      <span v-if="!store.isReadOnly" class="drag-handle" title="Drag to reorder">⠿</span>
 
       <input
         class="input role-name"
@@ -63,13 +63,14 @@ function remove() {
         :value="role.name"
         @input="onNameInput"
         :style="{ color: role.color }"
+        :disabled="store.isReadOnly"
       />
 
-      <button class="btn-icon btn-delete" type="button" title="Delete role" @click="remove">✕</button>
+      <button v-if="!store.isReadOnly" class="btn-icon btn-delete" type="button" title="Delete role" @click="remove">✕</button>
     </div>
 
     <!-- Color picker -->
-    <div class="role-color-picker">
+    <div v-if="!store.isReadOnly" class="role-color-picker">
       <ColorPicker
         :family="role.colorFamily"
         :modelValue="role.color"
@@ -82,7 +83,7 @@ function remove() {
     <div class="goals-section">
       <div class="goals-label">
         <span>Big Rock Goals</span>
-        <button class="btn-add-goal" type="button" @click="addGoal">+ Add Goal</button>
+        <button v-if="!store.isReadOnly" class="btn-add-goal" type="button" @click="addGoal">+ Add Goal</button>
       </div>
 
       <!-- Warning: 0 goals -->
@@ -94,6 +95,7 @@ function remove() {
         handle=".drag-handle"
         ghost-class="ghost"
         animation="180"
+        :disabled="store.isReadOnly"
       >
         <template #item="{ element }">
           <GoalCard

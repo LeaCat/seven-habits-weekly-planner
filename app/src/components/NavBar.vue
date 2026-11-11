@@ -9,18 +9,36 @@ const tabs = [
   { key: 'budget', label: '2 · Budget' },
   { key: 'plan',   label: '3 · Plan'   },
 ]
+
+function tabClick(key) {
+  if (key === 'home') {
+    store.goHome()
+  } else {
+    store.setMode(key)
+  }
+}
 </script>
 
 <template>
   <nav class="navbar">
     <span class="week-label">{{ weekLabel(store.weekKey) }}</span>
+    <span v-if="store.isReadOnly" class="readonly-badge">
+      📅 Viewing: {{ weekLabel(store.weekKey) }}
+    </span>
     <div class="tabs">
+      <button
+        class="tab-btn"
+        :class="{ active: store.mode === 'home' }"
+        @click="store.goHome()"
+      >
+        🏠 Home
+      </button>
       <button
         v-for="tab in tabs"
         :key="tab.key"
         class="tab-btn"
         :class="{ active: store.mode === tab.key }"
-        @click="store.setMode(tab.key)"
+        @click="tabClick(tab.key)"
       >
         {{ tab.label }}
       </button>
@@ -46,6 +64,17 @@ const tabs = [
 .week-label {
   font-size: 13px;
   color: var(--muted);
+  white-space: nowrap;
+}
+
+.readonly-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 999px;
+  padding: 3px 10px;
   white-space: nowrap;
 }
 

@@ -8,6 +8,11 @@ import TimeBlock from './TimeBlock.vue'
 const store = useWeekStore()
 const { handleDrop } = useDragDrop()
 
+function onDrop(day, hour, event) {
+  if (store.isReadOnly) return
+  handleDrop(day, hour, event)
+}
+
 // ── Week dates ────────────────────────────────────────────────────────────────
 const weekDates = computed(() => getWeekDates(store.weekKey))
 
@@ -131,7 +136,7 @@ function blocksForDay(dayIndex) {
           class="day-cell"
           :class="{ 'today-column': isToday(weekDates[dayIndex - 1]) }"
           @dragover.prevent
-          @drop="handleDrop(dayIndex - 1, hour, $event)"
+          @drop="onDrop(dayIndex - 1, hour, $event)"
         >
           <!-- Blocks are absolutely positioned inside the first row's column container -->
           <!-- We use a separate blocks layer rendered once per column (after the grid) -->

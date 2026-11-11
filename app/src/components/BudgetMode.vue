@@ -97,6 +97,7 @@ const hasRoles = computed(() => store.plan.roles.length > 0)
                 placeholder="What does done look like?"
                 rows="2"
                 @input="onOutputInput(goal.id, $event)"
+                :disabled="store.isReadOnly"
               ></textarea>
             </div>
             <button
@@ -160,6 +161,7 @@ const hasRoles = computed(() => store.plan.roles.length > 0)
                   step="0.5"
                   :value="goal.budgetHours"
                   @input="onGoalBudgetInput(goal.id, $event)"
+                  :disabled="store.isReadOnly"
                 />
                 <span class="unit">h</span>
               </div>
