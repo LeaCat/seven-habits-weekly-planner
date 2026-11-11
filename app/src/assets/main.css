@@ -1,0 +1,177 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Base tokens (mirrored from habit-tracker) ─────────────── */
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #1f2328;
+  --muted: #57606a;
+  --accent: #3b82d4;
+  --danger: #d94f4f;
+  --done: #22c55e;
+  --done-light: #dcfce7;
+  --radius: 10px;
+
+  /* ── Color-family palettes ─────────────────────────────────── */
+  /* Work — professional / research / career */
+  --theme-work-1: #1e3a5f;
+  --theme-work-2: #1a6b8a;
+  --theme-work-3: #0d6e6e;
+  --theme-work-4: #1b5e20;
+
+  /* Life — family / partner / community */
+  --theme-life-1: #e65100;
+  --theme-life-2: #e64a19;
+  --theme-life-3: #c2185b;
+  --theme-life-4: #ad1457;
+
+  /* Self — personal growth / Sharpen the Saw */
+  --theme-self-1: #7c4dff;
+  --theme-self-2: #9c27b0;
+  --theme-self-3: #6a1b9a;
+  --theme-self-4: #8e24aa;
+  --theme-self-5: #268b07;
+  --theme-self-6: #beea41;
+
+  /* ── Grid constants ────────────────────────────────────────── */
+  --slot-height: 48px;
+  --grid-start: 7;
+  --grid-end: 24;
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Utility: card surface ─────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* ── Utility: section header ───────────────────────────────── */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 12px;
+}
+
+/* ── Utility: muted label ──────────────────────────────────── */
+.label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* ── Utility: text input / textarea ───────────────────────── */
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: var(--accent); }
+
+/* ── Button base (shared across modes) ─────────────────────── */
+.btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.12s, background 0.12s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-secondary:hover { background: #d0d3d8; }
+
+/* ── Mobile: narrow screens (≤ 768px) ──────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --slot-height: 40px;
+  }
+
+  /* NavBar: stack week-label above tabs, allow tabs to wrap */
+  .navbar {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .navbar .tabs {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  .navbar .tab-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* Budget table: hide less-important columns on mobile */
+  .budget-table {
+    grid-template-columns: 20px 1fr 80px 60px !important;
+  }
+  /* Hide outcome column on mobile (3rd column = index 3 in the grid) */
+  .bt-head:nth-child(3),
+  .bt-cell.bt-outcome {
+    display: none;
+  }
+}
+
+/* ── Print styles ───────────────────────────────────────────── */
+@media print {
+  body {
+    background: white;
+    color: #000;
+  }
+
+  /* Hide interactive chrome */
+  nav,
+  aside,
+  .plan-aside,
+  .btn-hamburger,
+  .btn-back,
+  .btn-next,
+  .btn-add-role,
+  .mode-nav,
+  .define-footer,
+  .plan-header button,
+  button {
+    display: none !important;
+  }
+
+  /* Print-only elements become visible */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Full-width grid */
+  .plan-body {
+    display: block !important;
+  }
+  .plan-main {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Reset card shadows for print */
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
